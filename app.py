@@ -55,7 +55,12 @@ while True:
         withdraw()
 
     elif user_input == "4":
-        print("Available Balance:", balance)
+        PIN = input("Enter PIN:")
+        if PIN == User_Pin:
+            print("Available Balance:", balance)
+        else:
+            print("Incorrect Pin")
+        
 
     elif user_input == "0":
         print("Exit")
