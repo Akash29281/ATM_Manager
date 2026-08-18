@@ -41,6 +41,9 @@ while True:
     if user_input == "3":
         Withdraw()
 
+    if user_input == "4":
+        print("Avaiable Balance :",Total_Amt)
+
     elif user_input == "0":
         print("exit")
         break
