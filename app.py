@@ -1,12 +1,20 @@
 import random
 
 deposit_Amt = 0
+Total_Amt = 0
 
 
 #Genetate atm pin 
 def generate_pin():
     pin = random.randint(100000,999999)
     return pin
+
+#Withdraw
+def Withdraw():
+    user_withdraw = int(input("Enter Your Amount"))
+    Total_Amt = deposit_Amt - user_withdraw
+    print("Amount Withdraw Successfully !",user_withdraw)
+    print(Total_Amt)
 
 while True:
     
@@ -29,6 +37,9 @@ while True:
         deposit_Amt += user_dep
         print("Deposite successfull !")
         print(deposit_Amt)
+
+    if user_input == "3":
+        Withdraw()
 
     elif user_input == "0":
         print("exit")
