@@ -1,10 +1,12 @@
 import random
 
 balance = 0
+User_Pin = 0
 
 # Generate ATM PIN
 def generate_pin():
-    return random.randint(100000, 999999)
+    User_Pin = random.randint(100000, 999999)
+    return User_Pin
 
 # Withdraw Amount
 def withdraw():
