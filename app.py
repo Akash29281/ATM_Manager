@@ -1,10 +1,10 @@
 import random
 
 balance = 0
-User_Pin = 0
 
 # Generate ATM PIN
 def generate_pin():
+    global User_Pin 
     User_Pin = random.randint(100000, 999999)
     return User_Pin
 
@@ -12,13 +12,13 @@ def generate_pin():
 def withdraw():
     global balance
 
-    PIN = input("Enter PIN:")
-    if PIN == User_Pin:
+    PIN = int(input("Enter PIN:"))
+    if PIN != User_Pin:
+        print("Incorrect Pin")    
+    else:
         if balance == 0:
             print("Account Balance is 0")
             return
-    else:
-        print("Incorrect Pin")    
 
     user_withdraw = int(input("Enter Your Amount: "))
 
@@ -27,7 +27,6 @@ def withdraw():
     else:
         balance -= user_withdraw
         print("Amount Withdrawn Successfully!")
-        print("Available Balance:", balance)
 
 
 while True:
@@ -41,27 +40,31 @@ while True:
     print("---------------------------------------")
 
     user_input = input("Enter Your Choice: ")
-
+    #Generate Pin
     if user_input == "1":
-        print(f"Your PIN: {generate_pin()}")
+        print(f"Your PIN:{generate_pin()}")
+        pass
 
+    #Deposite Function
     elif user_input == "2":
-        user_dep = int(input("Enter Your Amount: "))
-        balance += user_dep
-        print("Deposit Successful!")
-        print("Available Balance:", balance)
-
+        PIN = int(input("Enter PIN:"))
+        if PIN != User_Pin:
+            print("Incorrect Pin")
+        else:
+            user_dep = int(input("Enter Your Amount: "))
+            balance += user_dep
+            print("Deposit Successful!")
+    #Withdraw function        
     elif user_input == "3":
         withdraw()
-
+    #View Balance
     elif user_input == "4":
-        PIN = input("Enter PIN:")
-        if PIN == User_Pin:
-            print("Available Balance:", balance)
-        else:
+        PIN = int(input("Enter PIN:"))
+        if PIN != User_Pin:
             print("Incorrect Pin")
-        
-
+        else:
+            print("Available Balance:", balance)
+    #Exit
     elif user_input == "0":
         print("Exit")
         break
