@@ -1,10 +1,10 @@
 import random
 
 balance = 0
-
+User_Pin = None
 # Generate ATM PIN
 def generate_pin():
-    global User_Pin 
+    global User_Pin
     User_Pin = random.randint(100000, 999999)
     return User_Pin
 
@@ -14,7 +14,8 @@ def withdraw():
 
     PIN = int(input("Enter PIN:"))
     if PIN != User_Pin:
-        print("Incorrect Pin")    
+        print("Incorrect Pin")
+        return
     else:
         if balance == 0:
             print("Account Balance is 0")
@@ -47,13 +48,20 @@ while True:
 
     #Deposite Function
     elif user_input == "2":
+        print(User_Pin)
+        if User_Pin is None:
+            print("Please generate a PIN first.")
+            continue
         PIN = int(input("Enter PIN:"))
         if PIN != User_Pin:
             print("Incorrect Pin")
         else:
             user_dep = int(input("Enter Your Amount: "))
-            balance += user_dep
-            print("Deposit Successful!")
+            if user_dep <= 0:
+                print("Please enter a valid amount.")
+            else:
+                balance += user_dep
+                print("Deposit Successful!")
     #Withdraw function        
     elif user_input == "3":
         withdraw()
