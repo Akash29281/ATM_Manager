@@ -82,7 +82,7 @@ while True:
         withdraw()
     #View Balance
     elif user_input == "4":
-        PIN = int(input("Enter PIN:"))
+        PIN = int(input("Enter PIN: "))
         if PIN != User_Pin:
             print("Incorrect Pin")
             Attempt_count += 1
