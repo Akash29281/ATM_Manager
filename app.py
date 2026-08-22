@@ -52,7 +52,7 @@ while True:
     print("Withdraw Amount press 3")
     print("View Balance press 4")
     print("Exit press 0")
-    print("---------------------------------------")
+    print("-----------------------------------------")
 
     user_input = input("Enter Your Choice: ")
     #Generate Pin
