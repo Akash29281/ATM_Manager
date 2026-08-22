@@ -58,7 +58,6 @@ while True:
     #Generate Pin
     if user_input == "1":
         print(f"Your PIN:{generate_pin()}")
-        pass
     #Deposite Function
     elif user_input == "2":
         if User_Pin is None:
