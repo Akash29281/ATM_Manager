@@ -16,24 +16,33 @@ def withdraw():
     global balance
     global Attempt_count
     user_withdraw = 0
+    if User_Pin is None:
+        print("Please generate a PIN first.")
+        return
+    
     PIN = int(input("Enter PIN:"))
+
     if PIN != User_Pin:
         print("Incorrect Pin")
         Attempt_count += 1
         # print(Attempt_count)
         if Attempt_count == 3:
             print("UnAuthorized Person !")
-            return
+        return
     else:
         user_withdraw = int(input("Enter Your Amount: "))
         if balance == 0:
             print("Account Balance is 0")
             return
+    if user_withdraw <= 0:
+        print("Please enter a valid amount.")
+        return
     if user_withdraw > balance:
         print("Insufficient Balance!")
     else:
         balance -= user_withdraw
         print("Amount Withdrawn Successfully!")
+        print("Remaining Balance:", balance)
 
 while True:
 
