@@ -41,7 +41,7 @@ def withdraw():
         print("Insufficient Balance!")
     else:
         balance -= user_withdraw
-        print("Amount Withdrawn Successfully!")
+        print(user_withdraw,"Withdrawn Successfully!")
         print("Remaining Balance:", balance)
 
 while True:
