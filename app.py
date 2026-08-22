@@ -76,7 +76,7 @@ while True:
                 print("Please enter a valid amount.")
             else:
                 balance += user_dep
-                print("Deposit Successful!")
+                print(user_dep,"Deposit Successful!")
     #Withdraw function        
     elif user_input == "3":
         withdraw()
