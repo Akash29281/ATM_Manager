@@ -24,9 +24,10 @@ class ATM_Manager:
         if user_pin != self.pin:
             print("Invalid pin.. try again")
             self.attempt +=1
+
             if self.attempt >= 3:
                 print("Blocked try Again after some time:")
-                return   
+            return   
 
         self.attempt=0
         amount = int(input("Enter Amount To Deposite"))
