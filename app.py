@@ -1,99 +1,88 @@
 import random
 
+class ATM_Manager:
 
-Attempt_count = 0
-balance = 0
-User_Pin = None
-
-# Generate ATM PIN
-def generate_pin():
-    global User_Pin
-    User_Pin = random.randint(100000, 999999)
-    return User_Pin
-
-# Withdraw Function
-def withdraw():
-    global balance
-    global Attempt_count
-    user_withdraw = 0
-    if User_Pin is None:
-        print("Please generate a PIN first.")
-        return
-    
-    PIN = int(input("Enter PIN:"))
-
-    if PIN != User_Pin:
-        print("Incorrect Pin")
-        Attempt_count += 1
-        # print(Attempt_count)
-        if Attempt_count == 3:
-            print("UnAuthorized Person !")
-        return
-    else:
-        user_withdraw = int(input("Enter Your Amount: "))
-        if balance == 0:
-            print("Account Balance is 0")
+    def __init__(self,amount=0, pin=None, attempt=0):
+        self.amount = amount
+        self.pin = pin
+        self.attempt = attempt
+    #Withdraw function
+    def withdraw(self, amount):
+        if self.amount < amount:
+            print("Insufficient Amount")
+        else:
+            self.amount -= amount
+            print("Amount Withdraw sucessfully")
+    #Deposite Function
+    def deposite(self):
+        if self.pin is None:
+            print("Please generate pin first")
             return
-    if user_withdraw <= 0:
-        print("Please enter a valid amount.")
-        return
-    if user_withdraw > balance:
-        print("Insufficient Balance!")
-    else:
-        balance -= user_withdraw
-        print(user_withdraw,"Withdrawn Successfully!")
-        print("Remaining Balance:", balance)
+        
+        user_pin = int(input("Enter Pin"))  # User input pin
+
+        if user_pin != self.pin:
+            print("Invalid pin.. try again")
+            self.attempt +=1
+            if self.attempt >= 3:
+                print("Blocked try Again after some time:")
+                return   
+
+        self.attempt=0
+        amount = int(input("Enter Amount To Deposite"))
+        if amount <= 0:
+            print("Invalid amount")
+            return
+        self.amount += amount
+        print(f"₹{amount} Deposited Successfully")
+        print(f"Current Balance: ₹{self.amount}")
+
+    # Balance function
+    def balance(self):
+        print(f"Current Balance: ₹{self.amount}")
+
+    def Pin_generate(self):
+        pin = random.randint(1000,9999)
+        print("pin generated successfully",pin)
+        self.pin = pin
+        
+    def exit(self):
+        exit
+
+
+
+A1 = ATM_Manager()
+ #atm.deposite(500)
 
 while True:
-
-    print("\n--------Welcome To 24x7 ATM------------")
-    print("Generate PIN press 1")
-    print("Deposit Amount press 2")
-    print("Withdraw Amount press 3")
-    print("View Balance press 4")
+    print("\n-------- Welcome To 24x7 ATM --------")
+    print("Deposit Amount press 1")
+    print("Withdraw Amount press 2")
+    print("View Balance press 3")
+    print("Generate Pin press 4")
     print("Exit press 0")
-    print("-----------------------------------------")
+    print("-------------------------------------")
 
-    user_input = input("Enter Your Choice: ")
-    #Generate Pin
-    if user_input == "1":
-        print(f"Your PIN:{generate_pin()}")
-    #Deposite Function
-    elif user_input == "2":
-        if User_Pin is None:
-            print("Please generate a PIN first.")
-            continue
-        PIN = int(input("Enter PIN:"))
-        if PIN != User_Pin:
-            print("Incorrect Pin")
-            Attempt_count += 1
-            if Attempt_count == 3:
-                print("UnAuthorized Person !")
-                break
-        else:
-            user_dep = int(input("Enter Your Amount: "))
-            if user_dep <= 0:
-                print("Please enter a valid amount.")
-            else:
-                balance += user_dep
-                print(user_dep,"Deposit Successful!")
-    #Withdraw function        
-    elif user_input == "3":
-        withdraw()
-    #View Balance
-    elif user_input == "4":
-        PIN = int(input("Enter PIN: "))
-        if PIN != User_Pin:
-            print("Incorrect Pin")
-            Attempt_count += 1
-            if Attempt_count == 3:
-                print("UnAuthorized Person !")
-                break
-        else:
-            print("Available Balance:", balance)
-    #Exit
-    elif user_input == "0":
-        print("Exit")
+    choice = int(input("Enter Your Choice: "))
+
+    if choice == 1:
+        #amount = int(input("Enter Amount: "))
+        A1.deposite()
+
+    elif choice == 2:
+        amount = int(input("Enter Amount: "))
+        A1.withdraw(amount)
+
+    elif choice == 3:
+        A1.balance()
+
+    elif choice == 4:
+        A1.Pin_generate()
+
+    elif choice == 0:
+        print("Thank You For Using ATM")
+        A1.exit()
         break
+
     else:
-        print("Invalid Choice!")
+        print("Invalid Choice")
