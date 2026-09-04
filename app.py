@@ -18,25 +18,23 @@ class ATM_Manager:
         if self.pin is None:
             print("Please generate pin first")
             return
-        
-        user_pin = int(input("Enter Pin"))  # User input pin
+        while self.attempt < 3:
+            user_pin = int(input("Enter Pin"))  # User input pin
 
-        if user_pin != self.pin:
-            print("Invalid pin.. try again")
+        if user_pin == self.pin:
+                self.attempt = 0
+                amount = int(input("Enter Amount To Deposite"))
+                if amount <= 0:
+                    print("Invalid amount")
+                    return
+                self.amount += amount
+                print(f"₹{amount} Deposited Successfully")
+                print(f"Current Balance: ₹{self.amount}")
+                print("Invalid pin.. try again")
+                return
+        else:
             self.attempt +=1
-
-            if self.attempt >= 3:
-                print("Blocked try Again after some time:")
-            return   
-
-        self.attempt=0
-        amount = int(input("Enter Amount To Deposite"))
-        if amount <= 0:
-            print("Invalid amount")
-            return
-        self.amount += amount
-        print(f"₹{amount} Deposited Successfully")
-        print(f"Current Balance: ₹{self.amount}")
+            print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")  
 
     # Balance function
     def balance(self):
