@@ -34,6 +34,7 @@ class ATM_Manager:
             amount = int(input("Enter Amount To Withdraw: "))
         except ValueError:
             print("Enter value only in numeric formate")
+            return
         if amount < 500:
             print("Please withdraw 500 or more: ") #alert msg
             return
@@ -52,6 +53,7 @@ class ATM_Manager:
             amount = int(input("Enter Amount To Deposite: "))
         except ValueError:
             print("Enter amount in numeric formate")
+            return
         if amount <= 0:
             print("Invalid amount")
             return
