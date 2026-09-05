@@ -63,7 +63,9 @@ class ATM_Manager:
 
     # Balance function
     def balance(self):
-        print(f"Current Balance: ₹{self.amount}")
+        if not self.balance:
+            print(f"Current Balance: ₹{self.amount}")
+            return
 
     def Pin_generate(self):
         pin = random.randint(1000,9999)
