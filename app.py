@@ -6,29 +6,38 @@ class ATM_Manager:
         self.amount = amount
         self.pin = pin
         self.attempt = attempt
-        
+
+    def pin_verify(self):
+        if self.pin is None:
+            print("Please generate pin first")
+            return False
+        attempt = 0
+        while attempt < 3:
+            user_pin = int(input("Enter Pin: "))
+            if user_pin == self.pin:
+                return True
+            attempt += 1
+            print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")
+
+        print("Account Blocked. try Again later")
+        return False
+    
     #Withdraw function
     def withdraw(self):
-        if self.pin is None: # Check pin is generated or not 
-            print("Please generate pin first")
+        if not self.pin_verify():
             return
         # attempt count
-        while self.attempt < 3:
-            user_pin = int(input("Enter Pin: ")) #user pin
-            if user_pin == self.pin:
-                self.attempt = 0
-                amount = int(input("Enter Amount To Withdraw: "))
-                if amount < 500:
-                    print("Please withdraw 500 or more: ") #alert msg
-                    return
-                self.amount -= amount
-                print(f"₹{amount} Withdraw Successfully")
-                print(f"Current Balance: ₹{self.amount}")
-                return
-            else:
-                self.attempt += 1
-                print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")
-
+        amount = int(input("Enter Amount To Withdraw: "))
+        if amount < 500:
+            print("Please withdraw 500 or more: ") #alert msg
+            return
+        if amount > self.amount:
+            print("Insufficient Balance")
+            return
+        self.amount -= amount
+        print(f"₹{amount} Withdraw Successfully")
+        return
+    
     #Deposite Function
     def deposite(self):
         if self.pin is None:
@@ -45,7 +54,6 @@ class ATM_Manager:
                     return
                 self.amount += amount
                 print(f"₹{amount} Deposited Successfully")
-                print(f"Current Balance: ₹{self.amount}")
                 return
             else:
                 self.attempt +=1
