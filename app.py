@@ -13,7 +13,12 @@ class ATM_Manager:
             return False
         attempt = 0
         while attempt < 3:
-            user_pin = int(input("Enter Pin: "))
+
+            try:
+                user_pin = int(input("Enter Pin: "))
+            except ValueError:
+                print("Enter only numeric value")
+                continue
             if user_pin == self.pin:
                 return True
             attempt += 1
