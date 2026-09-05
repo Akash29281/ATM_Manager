@@ -13,7 +13,6 @@ class ATM_Manager:
             return False
         attempt = 0
         while attempt < 3:
-
             try:
                 user_pin = int(input("Enter Pin: "))
             except ValueError:
@@ -31,7 +30,10 @@ class ATM_Manager:
     def withdraw(self):
         if not self.pin_verify():
             return
-        amount = int(input("Enter Amount To Withdraw: "))
+        try:
+            amount = int(input("Enter Amount To Withdraw: "))
+        except ValueError:
+            print("Enter value only in numeric formate")
         if amount < 500:
             print("Please withdraw 500 or more: ") #alert msg
             return
@@ -46,7 +48,10 @@ class ATM_Manager:
     def deposite(self):
         if not self.pin_verify():
             return
-        amount = int(input("Enter Amount To Deposite: "))
+        try:
+            amount = int(input("Enter Amount To Deposite: "))
+        except ValueError:
+            print("Enter amount in numeric formate")
         if amount <= 0:
             print("Invalid amount")
             return
