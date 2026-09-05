@@ -73,7 +73,6 @@ class ATM_Manager:
         self.pin = pin
 
 
-
 A1 = ATM_Manager()
  #atm.deposite(500)
 
