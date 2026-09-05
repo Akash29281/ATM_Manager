@@ -67,13 +67,10 @@ class ATM_Manager:
             print(f"Current Balance: ₹{self.amount}")
             return
 
-    def Pin_generate(self):
+    def generate_pin(self):
         pin = random.randint(1000,9999)
         print("pin generated successfully",pin)
         self.pin = pin
-        
-    def exit(self):
-        exit
 
 
 
@@ -102,7 +99,7 @@ while True:
         A1.balance()
 
     elif choice == 4:
-        A1.Pin_generate()
+        A1.generate_pin()
 
     elif choice == 0:
         print("Thank You For Using ATM")
