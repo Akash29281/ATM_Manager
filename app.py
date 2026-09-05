@@ -6,35 +6,50 @@ class ATM_Manager:
         self.amount = amount
         self.pin = pin
         self.attempt = attempt
+        
     #Withdraw function
-    def withdraw(self, amount):
-        if self.amount < amount:
-            print("Insufficient Amount")
-        else:
-            self.amount -= amount
-            print("Amount Withdraw sucessfully")
+    def withdraw(self):
+        if self.pin is None: # Check pin is generated or not 
+            print("Please generate pin first")
+            return
+        # attempt count
+        while self.attempt < 3:
+            user_pin = int(input("Enter Pin: ")) #user pin
+            if user_pin == self.pin:
+                self.attempt = 0
+                amount = int(input("Enter Amount To Withdraw: "))
+                if amount < 500:
+                    print("Please withdraw 500 or more: ") #alert msg
+                    return
+                self.amount -= amount
+                print(f"₹{amount} Withdraw Successfully")
+                print(f"Current Balance: ₹{self.amount}")
+                return
+            else:
+                self.attempt += 1
+                print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")
+
     #Deposite Function
     def deposite(self):
         if self.pin is None:
             print("Please generate pin first")
             return
         while self.attempt < 3:
-            user_pin = int(input("Enter Pin"))  # User input pin
+            user_pin = int(input("Enter Pin: "))  # User input pin
 
-        if user_pin == self.pin:
+            if user_pin == self.pin:
                 self.attempt = 0
-                amount = int(input("Enter Amount To Deposite"))
+                amount = int(input("Enter Amount To Deposite: "))
                 if amount <= 0:
                     print("Invalid amount")
                     return
                 self.amount += amount
                 print(f"₹{amount} Deposited Successfully")
                 print(f"Current Balance: ₹{self.amount}")
-                print("Invalid pin.. try again")
                 return
-        else:
-            self.attempt +=1
-            print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")  
+            else:
+                self.attempt +=1
+                print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")  
 
     # Balance function
     def balance(self):
@@ -69,8 +84,7 @@ while True:
         A1.deposite()
 
     elif choice == 2:
-        amount = int(input("Enter Amount: "))
-        A1.withdraw(amount)
+        A1.withdraw()
 
     elif choice == 3:
         A1.balance()
