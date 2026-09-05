@@ -26,7 +26,6 @@ class ATM_Manager:
     def withdraw(self):
         if not self.pin_verify():
             return
-        # attempt count
         amount = int(input("Enter Amount To Withdraw: "))
         if amount < 500:
             print("Please withdraw 500 or more: ") #alert msg
@@ -40,24 +39,15 @@ class ATM_Manager:
     
     #Deposite Function
     def deposite(self):
-        if self.pin is None:
-            print("Please generate pin first")
+        if not self.pin_verify():
             return
-        while self.attempt < 3:
-            user_pin = int(input("Enter Pin: "))  # User input pin
-
-            if user_pin == self.pin:
-                self.attempt = 0
-                amount = int(input("Enter Amount To Deposite: "))
-                if amount <= 0:
-                    print("Invalid amount")
-                    return
-                self.amount += amount
-                print(f"₹{amount} Deposited Successfully")
-                return
-            else:
-                self.attempt +=1
-                print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")  
+        amount = int(input("Enter Amount To Deposite: "))
+        if amount <= 0:
+            print("Invalid amount")
+            return
+        self.amount += amount
+        print(f"₹{amount} Deposited Successfully")
+        return  
 
     # Balance function
     def balance(self):
