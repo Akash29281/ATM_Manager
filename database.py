@@ -1,5 +1,5 @@
-import sqlite3
+import mysql.connector as MyConn
 
-conn = sqlite3.connect("atm.db") # make connection 
-print("Database Connected ")  # line shows db is connected or not
-conn.close()
+db = MyConn.connect(host = "localhost",user = "root",password = "1825@Kash",)
+
+print(db,"Connected")
