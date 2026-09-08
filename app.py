@@ -1,5 +1,13 @@
 import random
 
+from database.db import get_connection
+conn = get_connection()
+if conn.is_connected():
+    print("DB is connected")
+
+conn.close()
+
+
 class ATM_Manager:
 
     def __init__(self,amount=0, pin=None, attempt=0):
