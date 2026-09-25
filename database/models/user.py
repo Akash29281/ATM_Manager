@@ -39,6 +39,7 @@ def get_user(username):
     user = cursor.fetchone()
 
     cursor.close()
+    print("User Fetch sucessfully")
     conn.close()
 
     return user
