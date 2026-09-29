@@ -98,3 +98,16 @@ def get_user_by_card(card_number):
     cursor.close()
     conn.close()
     return user
+
+def pin_verify(card_number, pin):
+    user = get_user_by_card(card_number)
+    if user is None:
+        print("Card not found")
+        return False
+
+    if user[6] == pin:
+        print("login sucessfully")
+        return True
+
+    print("invalid pin")
+    return False
