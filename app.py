@@ -1,6 +1,6 @@
 import random
 from database.db import get_connection
-from database.models.user import create_user, get_user_by_card
+from database.models.user import create_user, get_user_by_card, pin_verify
 
 # from database.models.user import get_user, update_pin, delete
 
@@ -27,6 +27,8 @@ from database.models.user import create_user, get_user_by_card
 #get_user_by_card
 user = get_user_by_card("2589")
 print(user)
+
+print(pin_verify("147852369","1825"))
 
 
 class ATM_Manager:
