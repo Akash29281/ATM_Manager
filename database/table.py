@@ -5,13 +5,15 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users(
 id INT AUTO_INCREMENT PRIMARY KEY,
-username VARCHAR(100) NOT NULL,
-pin VARCHAR(10) NOT NULL,
-balance DECIMAL(10,2) DEFAULT 0
+customer_name VARCHAR(100) NOT NULL,
+account_number VARCHAR(100) UNIQUE NOT NULL,
+card_number VARCHAR(100) UNIQUE NOT NULL,
+balance DECIMAL(10,2) NOT NULL DEFAULT 0,
+is_locked BOOLEAN DEFAULT FALSE,
+pin VARCHAR(10) NOT NULL DEFAULT 0
 )
 """)
-
 conn.commit()
 
 print("✅ User table is created successfully")
-conn.close()
+cursor.close()
