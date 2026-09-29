@@ -1,20 +1,32 @@
 import random
-from database.models.user import get_user, update_pin, delete
+from database.db import get_connection
+from database.models.user import create_user, get_user_by_card
 
-"""# user creation
-create_user("Rahul","1825") """
-# Read data
-user = get_user("Rahul")
-print("User Data: ",user)
+# from database.models.user import get_user, update_pin, delete
 
-#update data
-update_pin(user[0],"2000")
-user = get_user("Akash")
-print("update sucessfully",user)
+# """# user creation
+# create_user("Rahul","1825") """
+# # Read data
+# user = get_user("Rahul")
+# print("User Data: ",user)
 
-#delete data
-delete()
-print("Record deleted: ")
+# #update data
+# update_pin(user[0],"2000")
+# user = get_user("Akash")
+# print("update sucessfully",user)
+
+# #delete data
+# delete((5,))
+# print("Record deleted: ")
+"""---------------------------------------"""
+#Create user data
+
+# create_user(username="Anshu",account_number=14426,card_number=2580,balance=5600,pin=1725)
+# print("User created..")
+
+#get_user_by_card
+user = get_user_by_card("2589")
+print(user)
 
 
 class ATM_Manager:
