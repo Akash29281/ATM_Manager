@@ -86,6 +86,7 @@ def create_user(username,account_number, card_number, balance, pin):
     conn.commit()
     # print("Data inserted")
     cursor.close()
+    conn.close()
 
 def get_user_by_card(card_number):
     conn = get_connection()
@@ -111,3 +112,26 @@ def pin_verify(card_number, pin):
 
     print("invalid pin")
     return False
+
+# Transactions data
+
+def create_transactions(user_id, transaction_type,amount):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """INSERT INTO Transactions(user_id
+    transaction_type,
+    amount) VALUES (%s,%s,%s,%s,%s)
+    """
+
+    values = (
+    user_id, 
+    transaction_type,
+    amount
+    )
+
+    cursor.execute(query, values)
+    conn.commit()
+    print("Transaction saved successfully:")
+    cursor.close()
+    conn.close()
