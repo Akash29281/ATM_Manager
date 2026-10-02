@@ -1,180 +1,63 @@
-import random
-from database.models.user import (
-    create_user,
-    get_user_by_card,
-    update_balance,
-    update_pin,
-    locked_account
-)
-
-from database.models.transaction import (
-    create_transactions,
-    get_transactions
-)
-
+from database.models.user import update_pin
+# from database.models.transaction import show_transaction_history
 from database.models.services.atm_service import (
+    pin_verify,
     deposit_money,
     withdraw_amount,
     check_balance,
-    pin_verify,show_transaction_history,transfer_money
+    transfer_money,show_transaction_history
 )
 
-"""---------------------------------------"""
-#Create user data
+card_number = input("Enter Card Number: ")
+pin = input("Enter PIN: ")
 
-# create_user(username="Anshu",account_number=14426,card_number=2580,balance=5600,pin=1725)
-# print("User created..")
+if pin_verify(card_number, pin):
 
-#get_user_by_card
-# user = get_user_by_card("2589")
-# print("before",user)
+    while True:
 
-# Pin verification
-# print(pin_verify("147852369","1825"))
+        print("\n===== ATM MENU =====")
+        print("1. Check Balance")
+        print("2. Deposit Money")
+        print("3. Withdraw Money")
+        print("4. Transfer Money")
+        print("5. Transaction History")
+        print("6. Change PIN")
+        print("7. Exit")
 
-# transaction data
-# create_transactions(1421,"UPI",5000)
-# print("Transaction saved successfully:")
+        choice = input("Enter Choice: ")
 
-# get transcation
-# transaction = get_transactions(1421)
-# print(transaction)
+        if choice == "1":
+            check_balance(card_number)
 
-# update balance
-# update_balance(user[0],1000)
-# user = get_user_by_card("2589")
-# print("After:", user)
+        elif choice == "2":
+            amount = float(input("Enter Amount: "))
+            deposit_money(card_number, amount)
 
-#deposite amount
-# deposite_money("147852369",5000)
+        elif choice == "3":
+            amount = float(input("Enter Amount: "))
+            withdraw_amount(card_number, amount)
 
-# withdraw function
-# withdraw_amount("147852369", 10000)
+        elif choice == "4":
+            receiver_account = input("Enter Receiver Account Number: ")
+            amount = float(input("Enter Amount: "))
+            transfer_money(card_number, receiver_account, amount)
 
-# # check balance
-# check_balance("147852369")
+        elif choice == "5":
+            show_transaction_history(card_number)
 
-# update pin
-# update_pin("147852369","1111",11111)
+        elif choice == "6":
+            old_pin = input("Enter Old PIN: ")
+            new_pin = input("Enter New PIN: ")
 
-#lock account
-# locked_account(user[0])
+            update_pin(
+                card_number,
+                old_pin,
+                new_pin
+            )
 
-# transaction History
-# show_transaction_history(147852369)
+        elif choice == "7":
+            print("Thank You For Using ATM")
+            break
 
-transfer_money(
-    "2589",      # sender card number
-    "14526",     # receiver account number
-    1000
-)
-
-class ATM_Manager:
-
-    def __init__(self,amount=0, pin=None, attempt=0):
-        self.amount = amount
-        self.pin = pin
-        self.attempt = attempt
-
-    def pin_verify(self):
-        if self.pin is None:
-            print("Please generate pin first")
-            return False
-        attempt = 0
-        while attempt < 3:
-            try:
-                user_pin = int(input("Enter Pin: "))
-            except ValueError:
-                print("Enter only numeric value")
-                continue
-            if user_pin == self.pin:
-                return True
-            
-            attempt += 1
-            print(f"Invalid PIN! Attempts Left: {3 - self.attempt}")
-
-        print("Account Blocked. try Again later")
-        return False
-    
-    #Withdraw function
-    def withdraw(self):
-        if not self.pin_verify():
-            return
-        try:
-            amount = int(input("Enter Amount To Withdraw: "))
-        except ValueError:
-            print("Enter value only in numeric formate")
-            return
-        if amount < 500:
-            print("Please withdraw 500 or more: ") #alert msg
-            return
-        if amount > self.amount:
-            print("Insufficient Balance")
-            return
-        self.amount -= amount
-        print(f"₹{amount} Withdraw Successfully")
-        return
-    
-    #Deposite Function
-    def deposite(self):
-        if not self.pin_verify():
-            return
-        try:
-            amount = int(input("Enter Amount To Deposite: "))
-        except ValueError:
-            print("Enter amount in numeric formate")
-            return
-        if amount <= 0:
-            print("Invalid amount")
-            return
-        self.amount += amount
-        print(f"₹{amount} Deposited Successfully")
-        return  
-
-    # Balance function
-    def balance(self):
-        if not self.pin_verify():
-            return
-        if not self.amount:  # not ka mtlb hota h ager self.amount khali hai to given statement print kr do
-            print(f"Avaiable balance: ₹{self.amount}")
         else:
-            print(f"Current Balance: ₹{self.amount}")
-    
-    # Generate Pin
-    def generate_pin(self):
-        pin = random.randint(1000,9999)
-        print("pin generated successfully",pin)
-        self.pin = pin
-
-
-A1 = ATM_Manager()
-
-while True:
-    print("\n-------- Welcome To 24x7 ATM --------")
-    print("Deposit Amount press 1")
-    print("Withdraw Amount press 2")
-    print("View Balance press 3")
-    print("Generate Pin press 4")
-    print("Exit press 0")
-    print("-------------------------------------")
-
-    choice = int(input("Enter Your Choice: "))
-
-    if choice == 1:
-        A1.deposite()
-
-    elif choice == 2:
-        A1.withdraw()
-
-    elif choice == 3:
-        A1.balance()
-
-    elif choice == 4:
-        A1.generate_pin()
-
-    elif choice == 0:
-        print("Thank You For Using ATM")
-        break
-
-    else:
-        print("Invalid Choice")
+            print("Invalid Choice")

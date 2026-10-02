@@ -2,10 +2,10 @@ from database.db import get_connection
 from database.models.user import (
     get_user_by_card,
     get_user_by_account,
-    update_balance,get_transactions
+    update_balance
 )
 
-from database.models.transaction import create_transactions
+from database.models.transaction import create_transactions,get_transactions
 
 def deposit_money(card_number, amount):
     user = get_user_by_card(card_number)
@@ -13,9 +13,9 @@ def deposit_money(card_number, amount):
     if amount <= 0:
         print("Invalid Amount")
         return
-    # if user is None:
-    #     print("user not found:")
-    #     return
+    if user is None:
+        print("user not found:")
+        return
 
     user_id = user[0]
     current_balance = float(user[4])
@@ -81,23 +81,19 @@ def show_transaction_history(card_number):
 
     user = get_user_by_card(card_number)
 
-    user_id = user[0]
-    conn = get_connection()
-    cursor = conn.cursor()
-
     if user is None:
         print("User not found")
         return
+
     user_id = user[0]
 
     transactions = get_transactions(user_id)
-    
-    print("\n===== TRANSACTION HISTORY =====")
-    for transaction in transactions:
-        print(transaction)
 
-    cursor.close()
-    conn.close()
+    print("\n===== TRANSACTION HISTORY =====")
+
+    for t_type, amount in transactions:
+        print(f"{t_type:<15} ₹{amount}")
+
 
 def transfer_money(sender_card, receiver_account, amount):
 
