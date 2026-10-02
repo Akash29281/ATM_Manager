@@ -157,6 +157,11 @@ def update_pin(card_number, old_pin, new_pin):
     if stored_pin != old_pin:
         print("Wrong PIN")
         return
+    
+    if old_pin == new_pin:
+        print("new pin can't be same as old pin")
+        return
+    
 
     conn = get_connection()
     cursor = conn.cursor()
