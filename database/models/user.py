@@ -1,65 +1,5 @@
 from database.db import get_connection
 
-# #Insert data
-# def create_user(username, pin):
-
-#     conn = get_connection()
-#     cursor = conn.cursor()
-
-#     query = """
-#     INSERT INTO users (username, pin, balance)
-#     VALUES (%s, %s, %s)
-#     """
-
-#     values = (username, pin, 0)
-
-#     cursor.execute(query, values)
-
-#     conn.commit()
-
-#     print("User created successfully")
-
-#     cursor.close()
-#     conn.close()
-
-# # read data
-
-# def get_user(username):
-
-#     conn = get_connection()
-#     cursor = conn.cursor(buffered=True)
-
-#     query = """
-#     SELECT id, username, pin, balance
-#     FROM users
-#     WHERE username = %s
-#     """
-
-#     cursor.execute(query, (username,))
-
-#     user = cursor.fetchone()
-
-#     cursor.close()
-#     print("User Fetch sucessfully")
-#     conn.close()
-
-#     return user
-
-# # update data
-# def update_pin(user_id, new_pin):
-#     conn = get_connection()
-#     cursor = conn.cursor()
-
-#     query = """UPDATE users SET pin = %s WHERE id = %s"""
-
-#     values = (new_pin, user_id)
-
-#     cursor.execute(query, values)
-#     conn.commit()
-#     print("Pin udated sucessfully: ")
-#     cursor.close()
-#     conn.close()
-
 # def delete(id):
 #     conn = get_connection()
 #     cursor = conn.cursor()
@@ -113,8 +53,22 @@ def pin_verify(card_number, pin):
     print("invalid pin")
     return False
 
-# Transactions data
+#update balance
+def update_balance(user_id, balance):
+    conn = get_connection()
+    cursor = conn.cursor()
 
+    query = """UPDATE users SET balance = %s WHERE id = %s"""
+    cursor.execute(query,(balance, user_id))
+
+    conn.commit()
+    print("Balance update ")
+    cursor.close()
+    conn.close()
+
+
+
+# Transactions data
 def create_transactions(user_id, transaction_type,amount):
     conn = get_connection()
     cursor = conn.cursor()
@@ -145,3 +99,51 @@ def get_transactions(user_id):
     cursor.close()
 
     return transactions
+
+def deposite_money(card_number, amount):
+    user = get_user_by_card(card_number)
+
+    if user is None:
+        print("user not found:")
+        return
+
+    user_id = user[0]
+    current_balance = float(user[4])
+    new_balance = current_balance + amount
+
+    # call update function
+    update_balance(user_id, new_balance)
+    create_transactions(user_id,"Deposite",amount)
+    print("deposite sucessfull")
+    print("new_balance",new_balance)
+
+def withdraw_amount(card_number, amount):
+    user = get_user_by_card(card_number)
+    if user is None:
+        print("user not found:")
+        return
+
+    user_id = user[0]
+    current_balance = float(user[4])
+    if current_balance < amount:
+        print("insufficient Balance")
+        return
+
+    new_balance = current_balance - amount
+    
+    # calling update function
+    update_balance(user_id, new_balance)
+    #calling transaction funnction
+    create_transactions(user_id, "Withdraw",amount)
+
+    print("Withdraw Successful")
+    print("Remaining Balance:", new_balance)
+
+def check_balance(card_number):
+    user = get_user_by_card(card_number)
+
+    if user is None:
+        print("user not fount")
+        return
+
+    print("Current Balance:", user[4])
