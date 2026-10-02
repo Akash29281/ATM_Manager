@@ -1,6 +1,6 @@
 import random
 from database.db import get_connection
-from database.models.user import create_user, get_user_by_card, pin_verify,create_transactions,get_transactions,update_balance,deposite_money,withdraw_amount,check_balance
+from database.models.user import create_user, get_user_by_card, pin_verify,create_transactions,get_transactions,update_balance,deposite_money,withdraw_amount,check_balance,update_pin
 
 """---------------------------------------"""
 #Create user data
@@ -34,8 +34,11 @@ print("before",user)
 # withdraw function
 # withdraw_amount("147852369", 10000)
 
-# check balance
-check_balance("147852369")
+# # check balance
+# check_balance("147852369")
+
+# update pin
+update_pin("147852369","1111",11111)
 
 
 class ATM_Manager:
