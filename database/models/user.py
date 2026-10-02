@@ -161,8 +161,14 @@ def update_pin(card_number, old_pin, new_pin):
     if old_pin == new_pin:
         print("new pin can't be same as old pin")
         return
-    
 
+    if len(str(new_pin)) != 4:
+        print("PIN must be 4 digit")
+        return 
+
+    if not str(new_pin).isdigit():
+        print("PIN must be contain only numbers")
+        return
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -173,7 +179,8 @@ def update_pin(card_number, old_pin, new_pin):
 
     conn.commit()
     print("PIN Updated:")
-    conn.close()
+
     cursor.close()
+    conn.close()
 
     
