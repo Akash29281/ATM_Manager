@@ -1,6 +1,23 @@
 import random
-from database.db import get_connection
-from database.models.user import create_user, get_user_by_card, pin_verify,create_transactions,get_transactions,update_balance,deposite_money,withdraw_amount,check_balance,update_pin
+from database.models.user import (
+    create_user,
+    get_user_by_card,
+    update_balance,
+    update_pin,
+    locked_account
+)
+
+from database.models.transaction import (
+    create_transactions,
+    get_transactions
+)
+
+from database.models.services.atm_service import (
+    deposit_money,
+    withdraw_amount,
+    check_balance,
+    pin_verify,show_transaction_history
+)
 
 """---------------------------------------"""
 #Create user data
@@ -12,8 +29,8 @@ from database.models.user import create_user, get_user_by_card, pin_verify,creat
 user = get_user_by_card("2589")
 print("before",user)
 
-#Pin verification
-# print(pin_verify("147852369","1825"))
+# Pin verification
+print(pin_verify("147852369","1825"))
 
 # transaction data
 # create_transactions(1421,"UPI",5000)
@@ -38,8 +55,13 @@ print("before",user)
 # check_balance("147852369")
 
 # update pin
-update_pin("147852369","1111",11111)
+# update_pin("147852369","1111",11111)
 
+#lock account
+# locked_account(user[0])
+
+# transaction History
+show_transaction_history(147852369)
 
 class ATM_Manager:
 
