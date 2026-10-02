@@ -1,23 +1,7 @@
 import random
 from database.db import get_connection
-from database.models.user import create_user, get_user_by_card, pin_verify
+from database.models.user import create_user, get_user_by_card, pin_verify,create_transactions,get_transactions,update_balance,deposite_money,withdraw_amount,check_balance
 
-# from database.models.user import get_user, update_pin, delete
-
-# """# user creation
-# create_user("Rahul","1825") """
-# # Read data
-# user = get_user("Rahul")
-# print("User Data: ",user)
-
-# #update data
-# update_pin(user[0],"2000")
-# user = get_user("Akash")
-# print("update sucessfully",user)
-
-# #delete data
-# delete((5,))
-# print("Record deleted: ")
 """---------------------------------------"""
 #Create user data
 
@@ -26,9 +10,32 @@ from database.models.user import create_user, get_user_by_card, pin_verify
 
 #get_user_by_card
 user = get_user_by_card("2589")
-print(user)
+print("before",user)
 
-print(pin_verify("147852369","1825"))
+#Pin verification
+# print(pin_verify("147852369","1825"))
+
+# transaction data
+# create_transactions(1421,"UPI",5000)
+# print("Transaction saved successfully:")
+
+# get transcation
+# transaction = get_transactions(1421)
+# print(transaction)
+
+# update balance
+# update_balance(user[0],1000)
+# user = get_user_by_card("2589")
+# print("After:", user)
+
+#deposite amount
+# deposite_money("147852369",5000)
+
+# withdraw function
+# withdraw_amount("147852369", 10000)
+
+# check balance
+check_balance("147852369")
 
 
 class ATM_Manager:
