@@ -66,8 +66,6 @@ def update_balance(user_id, balance):
     cursor.close()
     conn.close()
 
-
-
 # Transactions data
 def create_transactions(user_id, transaction_type,amount):
     conn = get_connection()
@@ -147,3 +145,30 @@ def check_balance(card_number):
         return
 
     print("Current Balance:", user[4])
+
+def update_pin(card_number, old_pin, new_pin):
+    user = get_user_by_card(card_number)
+
+    if user is None:
+        print("User not found:")
+        return
+
+    stored_pin = user[6]
+    if stored_pin != old_pin:
+        print("Wrong PIN")
+        return
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """UPDATE users SET pin = %s 
+    WHERE id = %s"""
+
+    cursor.execute(query , (new_pin,user[0]))
+
+    conn.commit()
+    print("PIN Updated:")
+    conn.close()
+    cursor.close()
+
+    
