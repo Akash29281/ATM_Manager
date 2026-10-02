@@ -1,6 +1,11 @@
 from database.db import get_connection
-from database.models.user import get_user_by_card, update_balance
-from database.models.transaction import create_transactions,get_transactions
+from database.models.user import (
+    get_user_by_card,
+    get_user_by_account,
+    update_balance
+)
+
+from database.models.transaction import create_transactions
 
 def deposit_money(card_number, amount):
     user = get_user_by_card(card_number)
@@ -93,3 +98,43 @@ def show_transaction_history(card_number):
 
     cursor.close()
     conn.close()
+
+def transfer_money(sender_card, receiver_account, amount):
+
+    sender = get_user_by_card(sender_card)
+
+    if sender is None:
+        print("Sender not found")
+        return
+
+    receiver = get_user_by_account(receiver_account)
+
+    if receiver is None:
+        print("Receiver not found")
+        return
+
+    if amount <= 0:
+        print("Invalid Amount")
+        return
+
+    sender_balance = float(sender[4])
+
+    if sender_balance < amount:
+        print("Insufficient Balance")
+        return
+
+    receiver_balance = float(receiver[4])
+
+    new_sender_balance = sender_balance - amount
+    new_receiver_balance = receiver_balance + amount
+
+    # Update balances
+    update_balance(sender[0], new_sender_balance)
+    update_balance(receiver[0], new_receiver_balance)
+
+    # Save transaction history
+    create_transactions(sender[0], "Transfer Out", amount)
+    create_transactions(receiver[0], "Transfer In", amount)
+
+    print("Transfer Successful")
+    print(f"Transferred ₹{amount}")

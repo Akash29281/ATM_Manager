@@ -16,7 +16,7 @@ from database.models.services.atm_service import (
     deposit_money,
     withdraw_amount,
     check_balance,
-    pin_verify,show_transaction_history
+    pin_verify,show_transaction_history,transfer_money
 )
 
 """---------------------------------------"""
@@ -26,11 +26,11 @@ from database.models.services.atm_service import (
 # print("User created..")
 
 #get_user_by_card
-user = get_user_by_card("2589")
-print("before",user)
+# user = get_user_by_card("2589")
+# print("before",user)
 
 # Pin verification
-print(pin_verify("147852369","1825"))
+# print(pin_verify("147852369","1825"))
 
 # transaction data
 # create_transactions(1421,"UPI",5000)
@@ -61,7 +61,13 @@ print(pin_verify("147852369","1825"))
 # locked_account(user[0])
 
 # transaction History
-show_transaction_history(147852369)
+# show_transaction_history(147852369)
+
+transfer_money(
+    "2589",      # sender card number
+    "14526",     # receiver account number
+    1000
+)
 
 class ATM_Manager:
 

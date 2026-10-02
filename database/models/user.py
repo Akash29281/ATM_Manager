@@ -94,4 +94,29 @@ def update_pin(card_number, old_pin, new_pin):
     cursor.close()
     conn.close()
 
+def get_user_by_account(account_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+    SELECT *
+    FROM users
+    WHERE account_number = %s
+    """
+
+    cursor.execute(query, (account_number,))
+    user = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return user
+
+
+    
+
+
+
+    
+
     
