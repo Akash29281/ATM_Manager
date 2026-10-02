@@ -2,7 +2,7 @@ from database.db import get_connection
 from database.models.user import (
     get_user_by_card,
     get_user_by_account,
-    update_balance
+    update_balance,get_transactions
 )
 
 from database.models.transaction import create_transactions
