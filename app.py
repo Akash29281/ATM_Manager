@@ -1,63 +1,54 @@
-from database.models.user import update_pin
-# from database.models.transaction import show_transaction_history
-from database.models.services.atm_service import (
-    pin_verify,
-    deposit_money,
-    withdraw_amount,
-    check_balance,
-    transfer_money,show_transaction_history
-)
+from flask import(
+Flask,
+render_template,
+request,
+session,
+redirect,
+url_for)
 
-card_number = input("Enter Card Number: ")
-pin = input("Enter PIN: ")
+from database.models.services.atm_service import pin_verify
 
-if pin_verify(card_number, pin):
+app = Flask(__name__)
+app.secret_key = "atm_secret_key"
 
-    while True:
+@app.route("/",methods = ["GET","POST"])
+def login():
 
-        print("\n===== ATM MENU =====")
-        print("1. Check Balance")
-        print("2. Deposit Money")
-        print("3. Withdraw Money")
-        print("4. Transfer Money")
-        print("5. Transaction History")
-        print("6. Change PIN")
-        print("7. Exit")
+    if request.method == "POST":
 
-        choice = input("Enter Choice: ")
+        card_number = request.form["card_number"] # take from login form
+        pin = request.form["pin"]  # take from login form
 
-        if choice == "1":
-            check_balance(card_number)
-
-        elif choice == "2":
-            amount = float(input("Enter Amount: "))
-            deposit_money(card_number, amount)
-
-        elif choice == "3":
-            amount = float(input("Enter Amount: "))
-            withdraw_amount(card_number, amount)
-
-        elif choice == "4":
-            receiver_account = input("Enter Receiver Account Number: ")
-            amount = float(input("Enter Amount: "))
-            transfer_money(card_number, receiver_account, amount)
-
-        elif choice == "5":
-            show_transaction_history(card_number)
-
-        elif choice == "6":
-            old_pin = input("Enter Old PIN: ")
-            new_pin = input("Enter New PIN: ")
-
-            update_pin(
-                card_number,
-                old_pin,
-                new_pin
+        if pin_verify(card_number, pin):
+            session["card-number"] = card_number  # card_no = 1414 --> system storage (1414)
+            print(session)
+            return redirect(
+                url_for("dashboard") # if card no is correct then redirect to dashboard
             )
 
-        elif choice == "7":
-            print("Thank You For Using ATM")
-            break
+        return "Invalid Card Number or Pin" # if card_no or pin not correct
 
-        else:
-            print("Invalid Choice")
+    return render_template("login.html") 
+
+@app.route("/dashboard")
+def dashboard():
+    if "card_number" not in session:
+
+        return redirect(
+            url_for("login")
+        )
+    card_number = session["card_number"]
+    return render_template(
+        "dashboard.html",
+        card_number = card_number
+    )
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    return redirect(
+        url_for("login")
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
