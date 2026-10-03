@@ -8,6 +8,8 @@ url_for)
 
 from database.models.services.atm_service import pin_verify
 
+from database.models.user import get_user_by_card
+
 app = Flask(__name__)
 app.secret_key = "atm_secret_key"
 
@@ -20,7 +22,7 @@ def login():
         pin = request.form["pin"]  # take from login form
 
         if pin_verify(card_number, pin):
-            session["card-number"] = card_number  # card_no = 1414 --> system storage (1414)
+            session["card_number"] = card_number  # card_no = 1414 --> system storage (1414)
             print(session)
             return redirect(
                 url_for("dashboard") # if card no is correct then redirect to dashboard
@@ -52,3 +54,16 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+@app.route("/balance")
+def balance():
+    if "card_number" not in session:
+        return redirect(url_for("login"))
+    card_number = session["card_number"]
+
+    user = get_user_by_card(card_number)
+
+    return render_template(
+        "balance.html",
+        balance = user[4]
+    )
