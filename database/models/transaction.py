@@ -25,7 +25,12 @@ def get_transactions(user_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    query = """ SELECT transaction_type,amount FROM transactions WHERE user_id = %s"""
+    query = """
+    SELECT transaction_type, amount
+    FROM transactions
+    WHERE user_id = %s
+    ORDER BY transaction_date DESC
+    """
 
     cursor.execute(query, (user_id,))
     transactions = cursor.fetchall()

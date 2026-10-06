@@ -89,11 +89,12 @@ def show_transaction_history(card_number):
 
     transactions = get_transactions(user_id)
 
-    print("\n===== TRANSACTION HISTORY =====")
+    # print("\n===== TRANSACTION HISTORY =====")
 
-    for t_type, amount in transactions:
-        print(f"{t_type:<15} ₹{amount}")
+    # for t_type, amount in transactions:
+    #     print(f"{t_type:<15} ₹{amount}")
 
+    return transactions
 
 def transfer_money(sender_card, receiver_account, amount):
 

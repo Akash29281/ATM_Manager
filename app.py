@@ -6,7 +6,7 @@ session,
 redirect,
 url_for)
 
-from database.models.services.atm_service import pin_verify,deposit_money,withdraw_amount
+from database.models.services.atm_service import pin_verify,deposit_money,withdraw_amount,show_transaction_history,get_transactions
 
 from database.models.user import get_user_by_card
 
@@ -99,6 +99,25 @@ def withdraw():
         amount = user[4]
     )
         
+@app.route("/history")
+def history():
+
+    if "card_number" not in session:
+        return redirect(url_for("login"))
+
+    card_number = session["card_number"]
+
+    transactions = show_transaction_history(card_number)
+    print("transactions: ",transactions)
+
+    return render_template(
+        "history.html",
+        transactions=transactions
+        
+    )
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
