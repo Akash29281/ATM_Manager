@@ -7,10 +7,11 @@
 </head>
 <body>
     <h1>Deposite</h1>
+    <h3>Current Balance: ₹{{ amount }}</h3>
     <a href="/logout">Logout</a>
 
-    <form action="" method="POST">
-        <label for="Deposit Amount"></label>
+    <form action="/deposit" method="POST">
+        <label for="deposit Amount"></label>
         <input type="number" name="deposit" placeholder="Enter amount for deposit">
         <button type="submit">Deposit</button>
     </form>
