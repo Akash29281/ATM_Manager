@@ -13,7 +13,7 @@ show_transaction_history,
 transfer_money
 )
 
-from database.models.user import get_user_by_card
+from database.models.user import get_user_by_card,update_pin
 
 app = Flask(__name__)
 app.secret_key = "atm_secret_key"
@@ -142,9 +142,24 @@ def trasfer():
         msg ="Amount Sent Sucessfully"
     )
 
+@app.route("/change_pin",methods = ["GET", "POST"] )
+def change_pin():
+    if "card_number" not in session:
+        return redirect(url_for("login"))
+    card_number = session["card_number"]
 
+    if request.method == "POST":
+        old_pin = request.form["current_pin"]
+        new_pin = request.form["new_pin"]
 
+        update_pin(card_number , old_pin, new_pin)
 
+    # user = get_user_by_card(card_number)
+
+    return render_template(
+        "change_pin.html",
+        msg = "PIN Changed"
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

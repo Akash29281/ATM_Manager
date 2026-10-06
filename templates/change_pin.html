@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Pin</title>
+</head>
+<body>
+    <h1>Chnage PIN</h1>
+    <h2>{{msg}}</h2>
+    <form action="/change_pin" methods = "POST">
+        <input type="number" name="current_pin" placeholder="Enter your current pin" required>
+        <input type="number" name="new_pin" placeholder="Enter your new pin" required>
+        <!-- <input type="number" name="confirm_pin" placeholder="Re-Enter your new pin" required> -->
+        <button type="submit">Change pin</button>
+    </form>
+</body>
+</html>
