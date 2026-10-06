@@ -6,7 +6,12 @@ session,
 redirect,
 url_for)
 
-from database.models.services.atm_service import pin_verify,deposit_money,withdraw_amount,show_transaction_history,get_transactions
+from database.models.services.atm_service import (pin_verify,
+deposit_money,
+withdraw_amount,
+show_transaction_history,
+transfer_money
+)
 
 from database.models.user import get_user_by_card
 
@@ -113,8 +118,30 @@ def history():
     return render_template(
         "history.html",
         transactions=transactions
-        
     )
+
+@app.route("/transfer",methods = ["GET","POST"])
+def trasfer():
+    if "card_number" not in session:
+        return redirect(url_for("login"))
+    
+    card_number = session["card_number"]
+
+    if request.method == "POST":
+        receiver_card_number = request.form["card_number"]
+        amount = float(request.form["amount"])
+
+        transfer_money(card_number, receiver_card_number, amount)
+
+
+    user = get_user_by_card(card_number)
+
+    return render_template(
+        "transfer.html",
+        balance = user[4],
+        msg ="Amount Sent Sucessfully"
+    )
+
 
 
 

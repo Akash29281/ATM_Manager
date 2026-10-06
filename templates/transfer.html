@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer</title>
+</head>
+<body>
+    <h1> Transfer Money</h1>
+    <h3>{{msg}}</h3>
+    <form action="/transfer" method="POST">
+    <input type="number" name="card_number" placeholder="Enter receiver account number" required>
+    <input type="number" name="amount" placeholder="Enter amount to transfer amount" required>
+    <button type="submit">Trasfer</button>
+    </form>
+
+</body>
+</html>
