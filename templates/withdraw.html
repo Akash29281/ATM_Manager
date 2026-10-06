@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Withdraw page</h1>
+    <h3>Current Balance: ₹{{ amount }}</h3>
+
+    <form action="/withdraw" method="POST">
+        <label for="withdraw amount">Withdraw Amount</label>
+        <input type="number" name="amount" placeholder="Enter amount to withdraw">
+        <button type="submit">Withdraw</button>
+    </form>
+</body>
+</html>
