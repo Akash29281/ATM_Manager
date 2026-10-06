@@ -6,7 +6,7 @@ session,
 redirect,
 url_for)
 
-from database.models.services.atm_service import pin_verify
+from database.models.services.atm_service import pin_verify,deposit_money,withdraw_amount
 
 from database.models.user import get_user_by_card
 
@@ -29,7 +29,7 @@ def login():
             )
 
         return "Invalid Card Number or Pin" # if card_no or pin not correct
-
+ 
     return render_template("login.html") 
 
 @app.route("/dashboard")
@@ -47,13 +47,10 @@ def dashboard():
 @app.route("/logout")
 def logout():
     session.clear()
-
-    return redirect(
+    return redirect (
         url_for("login")
     )
 
-if __name__ == "__main__":
-    app.run(debug=True)
 
 @app.route("/balance")
 def balance():
@@ -67,3 +64,41 @@ def balance():
         "balance.html",
         balance = user[4]
     )
+
+@app.route("/deposit",methods = ["GET","POST"])
+def deposit():
+
+    if "card_number" not in session:
+        return "card number is not stored in session"
+    card_number = session["card_number"]
+
+    if request.method == "POST":
+        amount = float(request.form["deposit"])
+
+        deposit_money(card_number,amount)
+    user = get_user_by_card(card_number)
+        
+    return render_template(
+        "deposit.html",
+        amount = user[4]
+    )
+
+@app.route("/withdraw",methods = ["GET","POST"])
+def withdraw():
+    if "card_number" not in session:
+        return redirect(url_for("login"))
+    card_number = session["card_number"]
+
+    if request.method == "POST":
+        amount = int(request.form["amount"])
+        withdraw_amount(card_number , amount)
+
+    user = get_user_by_card(card_number)
+    return render_template(
+        "withdraw.html",
+        amount = user[4]
+    )
+        
+
+if __name__ == "__main__":
+    app.run(debug=True)
