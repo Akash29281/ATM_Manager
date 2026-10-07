@@ -1,122 +1,98 @@
 from database.db import get_connection
-from database.models.transaction import create_transactions,get_transactions
 
 
-# create user
-def create_user(username,account_number, card_number, balance, pin):
+def create_user(username, account_number, card_number, balance, pin):
     conn = get_connection()
     cursor = conn.cursor()
-
-    query = """INSERT INTO users (customer_name, account_number, card_number, balance, pin) VALUES (%s,%s,%s,%s,%s)"""
-
-    values = (username,account_number, card_number, balance, pin)
-
-    cursor.execute(query, values)
-
+    query = """
+    INSERT INTO users (customer_name, account_number, card_number, balance, pin)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (username, account_number, card_number, balance, pin))
     conn.commit()
-    # print("Data inserted")
     cursor.close()
     conn.close()
+
 
 def get_user_by_card(card_number):
     conn = get_connection()
     cursor = conn.cursor()
-
-    query = """SELECT * FROM users WHERE card_number = %s"""
-
-    cursor.execute(query,(card_number,))
+    query = "SELECT * FROM users WHERE card_number = %s"
+    cursor.execute(query, (card_number,))
     user = cursor.fetchone()
     cursor.close()
     conn.close()
     return user
 
+
+def get_user_by_account(account_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM users WHERE account_number = %s"
+    cursor.execute(query, (account_number,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return user
+
+
 def locked_account(user_id):
     conn = get_connection()
     cursor = conn.cursor()
-
-    query = """UPDATE users SET is_locked = TRUE WHERE id = %s"""
-
-    cursor.execute(query,(user_id,))
+    query = "UPDATE users SET is_locked = TRUE WHERE id = %s"
+    cursor.execute(query, (user_id,))
     conn.commit()
     cursor.close()
     conn.close()
     print("Account Locked")
+    return True
 
 
-#update balance
 def update_balance(user_id, balance):
     conn = get_connection()
     cursor = conn.cursor()
-
-    query = """UPDATE users SET balance = %s WHERE id = %s"""
-    cursor.execute(query,(balance, user_id))
-
+    query = "UPDATE users SET balance = %s WHERE id = %s"
+    cursor.execute(query, (balance, user_id))
     conn.commit()
-    print("Balance update ")
     cursor.close()
     conn.close()
+    print("Balance updated")
+    return True
 
 
 def update_pin(card_number, old_pin, new_pin):
     user = get_user_by_card(card_number)
 
     if user is None:
-        print("User not found:")
-        return
+        print("User not found")
+        return False, "User not found"
 
-    stored_pin = user[6]
+    stored_pin = str(user[6])
+    old_pin = str(old_pin)
+    new_pin = str(new_pin)
+
     if stored_pin != old_pin:
         print("Wrong PIN")
-        return
-    
+        return False, "Current PIN is incorrect"
+
     if old_pin == new_pin:
-        print("new pin can't be same as old pin")
-        return
+        print("New PIN can't be same as old PIN")
+        return False, "New PIN cannot be the same as your current PIN"
 
-    if len(str(new_pin)) != 4:
-        print("PIN must be 4 digit")
-        return 
+    if len(new_pin) != 4:
+        print("PIN must be 4 digits")
+        return False, "PIN must be exactly 4 digits"
 
-    if not str(new_pin).isdigit():
-        print("PIN must be contain only numbers")
-        return
+    if not new_pin.isdigit():
+        print("PIN must contain only numbers")
+        return False, "PIN must contain only numbers"
+
     conn = get_connection()
     cursor = conn.cursor()
-
-    query = """UPDATE users SET pin = %s 
-    WHERE id = %s"""
-
-    cursor.execute(query , (new_pin,user[0]))
-
+    query = "UPDATE users SET pin = %s WHERE id = %s"
+    cursor.execute(query, (new_pin, user[0]))
     conn.commit()
-    print("PIN Updated:")
-
     cursor.close()
     conn.close()
-
-def get_user_by_account(account_number):
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    query = """
-    SELECT *
-    FROM users
-    WHERE account_number = %s
-    """
-
-    cursor.execute(query, (account_number,))
-    user = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return user
-
-
-    
-
-
-
-    
-
-    
+    print("PIN Updated Successfully")
+    return True, "PIN changed successfully"

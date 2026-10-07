@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deposite</title>
-</head>
-<body>
-    <h1>Deposite</h1>
-    <h3>Current Balance: ₹{{ amount }}</h3>
-    <a href="/logout">Logout</a>
-
-    <form action="/deposit" method="POST">
-        <label for="deposit Amount"></label>
-        <input type="number" name="deposit" placeholder="Enter amount for deposit">
-        <button type="submit">Deposit</button>
+{% extends "base.html" %}
+{% block title %}Deposit | ATM Manager Pro{% endblock %}
+{% block content %}
+<div class="mb-8"><div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Cash services</div><h1 class="text-3xl font-bold">Deposit Money</h1><p class="text-slate-500 mt-1">Add funds securely to your account.</p></div>
+<div class="grid lg:grid-cols-5 gap-6">
+  <section class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
+    <div class="rounded-2xl bg-slate-950 text-white p-5 mb-6 flex items-center justify-between"><div><div class="text-xs text-slate-400">Current Balance</div><div class="text-2xl font-bold mt-1">₹{{ "{:,.2f}".format(balance) }}</div></div><span class="material-symbols-outlined text-3xl">account_balance_wallet</span></div>
+    <form method="POST" action="{{ url_for('deposit') }}" class="space-y-5">
+      <div><label class="block text-sm font-semibold mb-2" for="deposit">Deposit Amount</label><div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">₹</span><input id="deposit" name="deposit" type="number" min="1" step="0.01" required class="w-full rounded-xl bg-slate-100 outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 border border-transparent pl-10 pr-4 py-4 text-xl font-semibold" placeholder="0.00"></div></div>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-semibold flex justify-center items-center gap-2"><span class="material-symbols-outlined">payments</span>Confirm Deposit</button>
     </form>
-        
-</body>
-</html>
+  </section>
+  <section class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6"><h2 class="font-bold text-lg mb-4">Recent Deposits</h2><div class="space-y-4">{% for t in recent_transactions %}<div class="flex justify-between"><div><div class="font-medium">Deposit</div><div class="text-xs text-slate-500">{{ t[2].strftime('%d %b, %I:%M %p') }}</div></div><div class="font-semibold text-emerald-600">+₹{{ "{:,.2f}".format(t[1]) }}</div></div>{% else %}<p class="text-sm text-slate-500">No deposits yet.</p>{% endfor %}</div></section>
+</div>
+{% endblock %}

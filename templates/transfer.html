@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer</title>
-</head>
-<body>
-    <h1> Transfer Money</h1>
-    <h3>{{msg}}</h3>
-    <form action="/transfer" method="POST">
-    <input type="number" name="card_number" placeholder="Enter receiver account number" required>
-    <input type="number" name="amount" placeholder="Enter amount to transfer amount" required>
-    <button type="submit">Trasfer</button>
+{% extends "base.html" %}
+{% block title %}Transfer | ATM Manager Pro{% endblock %}
+{% block content %}
+<div class="mb-8"><div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Secure transaction</div><h1 class="text-3xl font-bold">Transfer Money</h1><p class="text-slate-500 mt-1">Send money using the receiver's account number.</p></div>
+<div class="grid lg:grid-cols-5 gap-6">
+  <section class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
+    <div class="flex items-center justify-between rounded-2xl bg-blue-50 p-4 mb-6"><div><div class="text-xs text-blue-600">Available Balance</div><div class="text-xl font-bold text-blue-950 mt-1">₹{{ "{:,.2f}".format(balance) }}</div></div><span class="material-symbols-outlined text-blue-600">verified_user</span></div>
+    <form method="POST" action="{{ url_for('transfer') }}" class="space-y-5">
+      <div><label for="receiver_account" class="block text-sm font-semibold mb-2">Receiver Account Number</label><input id="receiver_account" name="receiver_account" type="text" inputmode="numeric" required class="w-full rounded-xl bg-slate-100 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none px-4 py-3.5" placeholder="Enter receiver account number"></div>
+      <div><label for="amount" class="block text-sm font-semibold mb-2">Transfer Amount</label><div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">₹</span><input id="amount" name="amount" type="number" min="1" step="0.01" required class="w-full rounded-xl bg-slate-100 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none pl-10 pr-4 py-3.5 text-xl font-semibold" placeholder="0.00"></div></div>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-semibold flex justify-center items-center gap-2"><span class="material-symbols-outlined">swap_horiz</span>Confirm Transfer</button>
     </form>
-
-</body>
-</html>
+  </section>
+  <section class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6"><h2 class="font-bold text-lg mb-4">Recent Transfers</h2><div class="space-y-4">{% for t in recent_transactions %}<div class="flex justify-between gap-3"><div><div class="font-medium">{{ t[0] }}</div><div class="text-xs text-slate-500">{{ t[2].strftime('%d %b, %I:%M %p') }}</div></div><div class="font-semibold {% if t[0] == 'Transfer In' %}text-emerald-600{% endif %}">₹{{ "{:,.2f}".format(t[1]) }}</div></div>{% else %}<p class="text-sm text-slate-500">No transfers yet.</p>{% endfor %}</div></section>
+</div>
+{% endblock %}

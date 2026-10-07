@@ -1,29 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction History</title>
-</head>
-<body>
-
-    <h1>Transaction History</h1>
-
-    <table border="1">
-
-        <tr>
-            <th>Type</th>
-            <th>Amount</th>
+{% extends "base.html" %}
+{% block title %}History | ATM Manager Pro{% endblock %}
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8"><div><div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Account activity</div><h1 class="text-3xl font-bold">Transaction History</h1><p class="text-slate-500 mt-1">All recorded deposits, withdrawals and transfers.</p></div><div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span><input id="historySearch" oninput="filterHistory()" class="rounded-xl border border-slate-200 bg-white pl-10 pr-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-100" placeholder="Search transactions"></div></div>
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left" id="historyTable">
+      <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th class="px-5 py-4">Type</th><th class="px-5 py-4">Amount</th><th class="px-5 py-4">Date & Time</th><th class="px-5 py-4">Status</th></tr></thead>
+      <tbody class="divide-y divide-slate-100">
+        {% for t in transactions %}
+        <tr class="hover:bg-slate-50 transaction-row">
+          <td class="px-5 py-4"><div class="flex items-center gap-3"><span class="h-9 w-9 rounded-full flex items-center justify-center {% if t[0] in ['Deposit','Transfer In'] %}bg-emerald-50 text-emerald-600{% else %}bg-slate-100 text-slate-700{% endif %}"><span class="material-symbols-outlined text-[19px]">{% if t[0] == 'Deposit' %}south_west{% elif t[0] == 'Withdraw' %}atm{% elif t[0] == 'Transfer In' %}call_received{% else %}call_made{% endif %}</span></span><span class="font-semibold">{{ t[0] }}</span></div></td>
+          <td class="px-5 py-4 font-semibold {% if t[0] in ['Deposit','Transfer In'] %}text-emerald-600{% endif %}">{% if t[0] in ['Deposit','Transfer In'] %}+{% else %}-{% endif %}₹{{ "{:,.2f}".format(t[1]) }}</td>
+          <td class="px-5 py-4 text-sm text-slate-500">{{ t[2].strftime('%d %b %Y, %I:%M %p') }}</td>
+          <td class="px-5 py-4"><span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700">Completed</span></td>
         </tr>
-
-        {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction[0] }}</td>
-            <td>₹{{ transaction[1] }}</td>
-        </tr>
-        {% endfor %}
-
+        {% else %}<tr><td colspan="4" class="px-5 py-10 text-center text-slate-500">No transactions found.</td></tr>{% endfor %}
+      </tbody>
     </table>
-
-</body>
-</html>
+  </div>
+</div>
+<script>
+function filterHistory(){
+  const q=document.getElementById('historySearch').value.toLowerCase();
+  document.querySelectorAll('.transaction-row').forEach(row=>{row.style.display=row.innerText.toLowerCase().includes(q)?'':'none';});
+}
+</script>
+{% endblock %}

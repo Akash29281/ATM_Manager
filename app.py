@@ -1,165 +1,236 @@
-from flask import(
-Flask,
-render_template,
-request,
-session,
-redirect,
-url_for)
+import os
+from decimal import Decimal
 
-from database.models.services.atm_service import (pin_verify,
-deposit_money,
-withdraw_amount,
-show_transaction_history,
-transfer_money
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+
+from database.models.services.atm_service import (
+    deposit_money,
+    pin_verify,
+    transfer_money,
+    withdraw_amount,
 )
-
-from database.models.user import get_user_by_card,update_pin
+from database.models.transaction import get_transactions_with_date
+from database.models.user import get_user_by_card, locked_account, update_pin
 
 app = Flask(__name__)
-app.secret_key = "atm_secret_key"
+app.secret_key = os.getenv("ATM_SECRET_KEY", "atm_secret_key_change_me")
 
-@app.route("/",methods = ["GET","POST"])
+
+def current_user():
+    card_number = session.get("card_number")
+    if not card_number:
+        return None
+    return get_user_by_card(card_number)
+
+
+def masked_number(value, visible=4):
+    text = str(value)
+    if len(text) <= visible:
+        return text
+    return "•" * (len(text) - visible) + text[-visible:]
+
+
+def user_context(user):
+    return {
+        "user": user,
+        "customer_name": user[1],
+        "account_number": user[2],
+        "masked_account": masked_number(user[2]),
+        "card_number": user[3],
+        "masked_card": masked_number(user[3]),
+        "balance": user[4],
+        "is_locked": bool(user[5]),
+    }
+
+
+@app.route("/", methods=["GET", "POST"])
 def login():
+    if "card_number" in session:
+        return redirect(url_for("dashboard"))
 
     if request.method == "POST":
+        card_number = request.form.get("card_number", "").replace(" ", "").strip()
+        pin = request.form.get("pin", "").strip()
+        user = get_user_by_card(card_number)
 
-        card_number = request.form["card_number"] # take from login form
-        pin = request.form["pin"]  # take from login form
+        if user is None:
+            flash("Card number not found.", "error")
+            return render_template("login.html")
+
+        if user[5]:
+            flash("This account is locked. Please contact an administrator.", "error")
+            return render_template("login.html")
 
         if pin_verify(card_number, pin):
-            session["card_number"] = card_number  # card_no = 1414 --> system storage (1414)
-            print(session)
-            return redirect(
-                url_for("dashboard") # if card no is correct then redirect to dashboard
-            )
+            session.clear()
+            session["card_number"] = card_number
+            session["failed_attempts"] = 0
+            flash("Login successful. Welcome back!", "success")
+            return redirect(url_for("dashboard"))
 
-        return "Invalid Card Number or Pin" # if card_no or pin not correct
- 
-    return render_template("login.html") 
+        attempts = session.get("failed_attempts", 0) + 1
+        session["failed_attempts"] = attempts
+        attempts_left = 3 - attempts
+
+        if attempts >= 3:
+            locked_account(user[0])
+            session.clear()
+            flash("Account locked after 3 incorrect PIN attempts.", "error")
+        else:
+            flash(f"Invalid PIN. {attempts_left} attempt(s) remaining.", "error")
+
+    return render_template("login.html")
+
 
 @app.route("/dashboard")
 def dashboard():
-    if "card_number" not in session:
+    user = current_user()
+    if user is None:
+        return redirect(url_for("login"))
 
-        return redirect(
-            url_for("login")
-        )
-    card_number = session["card_number"]
+    transactions = get_transactions_with_date(user[0])
+    recent_transactions = transactions[:5]
+
+    total_deposits = sum((Decimal(str(t[1])) for t in transactions if t[0] in ("Deposit", "Transfer In")), Decimal("0"))
+    total_withdrawals = sum((Decimal(str(t[1])) for t in transactions if t[0] == "Withdraw"), Decimal("0"))
+    total_transfers = sum((Decimal(str(t[1])) for t in transactions if t[0] == "Transfer Out"), Decimal("0"))
+
     return render_template(
         "dashboard.html",
-        card_number = card_number
-    )
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect (
-        url_for("login")
+        **user_context(user),
+        recent_transactions=recent_transactions,
+        total_deposits=total_deposits,
+        total_withdrawals=total_withdrawals,
+        total_transfers=total_transfers,
     )
 
 
 @app.route("/balance")
 def balance():
-    if "card_number" not in session:
+    user = current_user()
+    if user is None:
         return redirect(url_for("login"))
-    card_number = session["card_number"]
 
-    user = get_user_by_card(card_number)
-
+    recent_transactions = get_transactions_with_date(user[0], limit=3)
     return render_template(
         "balance.html",
-        balance = user[4]
+        **user_context(user),
+        recent_transactions=recent_transactions,
     )
 
-@app.route("/deposit",methods = ["GET","POST"])
-def deposit():
 
-    if "card_number" not in session:
-        return "card number is not stored in session"
-    card_number = session["card_number"]
+@app.route("/deposit", methods=["GET", "POST"])
+def deposit():
+    user = current_user()
+    if user is None:
+        return redirect(url_for("login"))
 
     if request.method == "POST":
-        amount = float(request.form["deposit"])
+        amount = request.form.get("deposit", "").strip()
+        success, message = deposit_money(user[3], amount)
+        flash(message, "success" if success else "error")
+        return redirect(url_for("deposit"))
 
-        deposit_money(card_number,amount)
-    user = get_user_by_card(card_number)
-        
+    user = current_user()
+    recent_transactions = [
+        t for t in get_transactions_with_date(user[0]) if t[0] == "Deposit"
+    ][:3]
     return render_template(
         "deposit.html",
-        amount = user[4]
+        **user_context(user),
+        recent_transactions=recent_transactions,
     )
 
-@app.route("/withdraw",methods = ["GET","POST"])
+
+@app.route("/withdraw", methods=["GET", "POST"])
 def withdraw():
-    if "card_number" not in session:
+    user = current_user()
+    if user is None:
         return redirect(url_for("login"))
-    card_number = session["card_number"]
 
     if request.method == "POST":
-        amount = int(request.form["amount"])
-        withdraw_amount(card_number , amount)
+        amount = request.form.get("amount", "").strip()
+        success, message = withdraw_amount(user[3], amount)
+        flash(message, "success" if success else "error")
+        return redirect(url_for("withdraw"))
 
-    user = get_user_by_card(card_number)
+    user = current_user()
+    recent_transactions = [
+        t for t in get_transactions_with_date(user[0]) if t[0] == "Withdraw"
+    ][:3]
     return render_template(
         "withdraw.html",
-        amount = user[4]
-    )
-        
-@app.route("/history")
-def history():
-
-    if "card_number" not in session:
-        return redirect(url_for("login"))
-
-    card_number = session["card_number"]
-
-    transactions = show_transaction_history(card_number)
-    print("transactions: ",transactions)
-
-    return render_template(
-        "history.html",
-        transactions=transactions
+        **user_context(user),
+        recent_transactions=recent_transactions,
     )
 
-@app.route("/transfer",methods = ["GET","POST"])
-def trasfer():
-    if "card_number" not in session:
+
+@app.route("/transfer", methods=["GET", "POST"])
+def transfer():
+    user = current_user()
+    if user is None:
         return redirect(url_for("login"))
-    
-    card_number = session["card_number"]
 
     if request.method == "POST":
-        receiver_card_number = request.form["card_number"]
-        amount = float(request.form["amount"])
+        receiver_account = request.form.get("receiver_account", "").strip()
+        amount = request.form.get("amount", "").strip()
+        success, message = transfer_money(user[3], receiver_account, amount)
+        flash(message, "success" if success else "error")
+        return redirect(url_for("transfer"))
 
-        transfer_money(card_number, receiver_card_number, amount)
-
-
-    user = get_user_by_card(card_number)
-
+    user = current_user()
+    recent_transfers = [
+        t for t in get_transactions_with_date(user[0]) if t[0] in ("Transfer Out", "Transfer In")
+    ][:4]
     return render_template(
         "transfer.html",
-        balance = user[4],
-        msg ="Amount Sent Sucessfully"
+        **user_context(user),
+        recent_transactions=recent_transfers,
     )
 
-@app.route("/change_pin",methods = ["GET", "POST"] )
-def change_pin():
-    if "card_number" not in session:
+
+@app.route("/history")
+def history():
+    user = current_user()
+    if user is None:
         return redirect(url_for("login"))
-    card_number = session["card_number"]
+
+    transactions = get_transactions_with_date(user[0])
+    return render_template(
+        "history.html",
+        **user_context(user),
+        transactions=transactions,
+    )
+
+
+@app.route("/change_pin", methods=["GET", "POST"])
+def change_pin():
+    user = current_user()
+    if user is None:
+        return redirect(url_for("login"))
 
     if request.method == "POST":
-        old_pin = request.form["current_pin"]
-        new_pin = request.form["new_pin"]
+        old_pin = request.form.get("current_pin", "").strip()
+        new_pin = request.form.get("new_pin", "").strip()
+        confirm_pin = request.form.get("confirm_pin", "").strip()
 
-        update_pin(card_number , old_pin, new_pin)
+        if new_pin != confirm_pin:
+            flash("New PIN and confirmation PIN do not match.", "error")
+        else:
+            success, message = update_pin(user[3], old_pin, new_pin)
+            flash(message, "success" if success else "error")
+            if success:
+                return redirect(url_for("change_pin"))
 
-    # user = get_user_by_card(card_number)
+    return render_template("change_pin.html", **user_context(user))
 
-    return render_template(
-        "change_pin.html",
-        msg = "PIN Changed"
-    )
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    flash("You have been logged out securely.", "success")
+    return redirect(url_for("login"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Pin</title>
-</head>
-<body>
-    <h1>Chnage PIN</h1>
-    <h2>{{msg}}</h2>
-    <form action="/change_pin" methods = "POST">
-        <input type="number" name="current_pin" placeholder="Enter your current pin" required>
-        <input type="number" name="new_pin" placeholder="Enter your new pin" required>
-        <!-- <input type="number" name="confirm_pin" placeholder="Re-Enter your new pin" required> -->
-        <button type="submit">Change pin</button>
+{% extends "base.html" %}
+{% block title %}Change PIN | ATM Manager Pro{% endblock %}
+{% block content %}
+<div class="mb-8"><div class="text-xs uppercase tracking-widest text-slate-500 mb-2">Security settings</div><h1 class="text-3xl font-bold">Change PIN</h1><p class="text-slate-500 mt-1">Use a new 4-digit PIN that is different from your current PIN.</p></div>
+<div class="grid lg:grid-cols-5 gap-6">
+  <section class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
+    <form method="POST" action="{{ url_for('change_pin') }}" class="space-y-5">
+      <div><label for="current_pin" class="block text-sm font-semibold mb-2">Current PIN</label><input id="current_pin" name="current_pin" type="password" inputmode="numeric" maxlength="4" required class="w-full rounded-xl bg-slate-100 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none px-4 py-3.5 tracking-[0.3em]" placeholder="••••"></div>
+      <div><label for="new_pin" class="block text-sm font-semibold mb-2">New PIN</label><input id="new_pin" name="new_pin" type="password" inputmode="numeric" maxlength="4" required class="w-full rounded-xl bg-slate-100 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none px-4 py-3.5 tracking-[0.3em]" placeholder="••••"></div>
+      <div><label for="confirm_pin" class="block text-sm font-semibold mb-2">Confirm New PIN</label><input id="confirm_pin" name="confirm_pin" type="password" inputmode="numeric" maxlength="4" required class="w-full rounded-xl bg-slate-100 border border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none px-4 py-3.5 tracking-[0.3em]" placeholder="••••"></div>
+      <button type="submit" class="w-full bg-slate-950 hover:bg-slate-800 text-white rounded-xl py-3.5 font-semibold flex justify-center items-center gap-2"><span class="material-symbols-outlined">lock_reset</span>Update PIN</button>
     </form>
-</body>
-</html>
+  </section>
+  <section class="lg:col-span-2 bg-blue-50 border border-blue-100 rounded-2xl p-6"><div class="h-11 w-11 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-4"><span class="material-symbols-outlined">security</span></div><h2 class="font-bold text-lg">PIN Security Rules</h2><ul class="mt-4 space-y-3 text-sm text-slate-600"><li>• Must contain exactly 4 digits.</li><li>• Numbers only.</li><li>• Cannot be the same as your current PIN.</li><li>• Never share your PIN with anyone.</li></ul></section>
+</div>
+{% endblock %}
