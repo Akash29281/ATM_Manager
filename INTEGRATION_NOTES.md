@@ -1,7 +1,5 @@
 # ATM Manager Pro — Flask UI Integration
 
-The generated HTML designs are now connected to the existing Python/MySQL logic.
-
 ## Connected routes
 - `/` — Login + PIN verification + 3-attempt account locking
 - `/dashboard` — real user/account data + transaction summaries
