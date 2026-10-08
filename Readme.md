@@ -1,147 +1,217 @@
-````markdown
-# 🏧 ATM Management System (Python)
-This project simulates basic ATM operations such as PIN generation, account deposit, withdrawal, and balance inquiry while implementing PIN-based authentication and security features.
+# 🏦 ATM Manager Pro
+
+<p align="center">
+    <img src="static/images/dashboard.png" width="1000">
+</p>
+
+<p align="center">
+A secure ATM Management System built using Flask, MySQL, HTML, CSS, and JavaScript.
+</p>
+
+---
 
 ## 🚀 Features
 
-- Generate a secure 6-digit ATM PIN
-- Deposit money into the account
-- Withdraw money securely using PIN authentication
-- Check account balance
-- PIN verification for sensitive operations
-- Unauthorized access protection (maximum 3 incorrect PIN attempts)
-- Input validation for deposits and withdrawals
-- Simple and user-friendly command-line interface
+✅ Login Authentication
+
+✅ Session Management
+
+✅ User Dashboard
+
+✅ Balance Inquiry
+
+✅ Deposit Money
+
+✅ Withdraw Money
+
+✅ Transfer Money
+
+✅ Transaction History
+
+✅ Change PIN
+
+✅ User Profile
+
+✅ MySQL Database Integration
+
+✅ Secure Environment Variables (.env)
 
 ---
 
-## 📋 Technologies Used
+## 📸 Screenshots
 
-- Python 3
-- Random Module
+### 🔐 Login Page
+
+<p align="center">
+    <img src="static/images/login.png" width="900">
+</p>
 
 ---
 
-## 🛠️ Project Structure
+### 📊 Dashboard
+
+<p align="center">
+    <img src="static/images/dashboard.png" width="900">
+</p>
+
+---
+
+### 💸 Withdraw Money
+
+<p align="center">
+    <img src="static/images/withdraw.png" width="900">
+</p>
+
+---
+
+### 🔄 Transfer Money
+
+<p align="center">
+    <img src="static/images/transfer.png" width="900">
+</p>
+
+---
+
+### 📜 Transaction History
+
+<p align="center">
+    <img src="static/images/history.png" width="900">
+</p>
+
+---
+
+### 🔑 Change PIN
+
+<p align="center">
+    <img src="static/images/change-pin.png" width="900">
+</p>
+
+---
+
+### 👤 User Profile
+
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript
+
+### Backend
+- Python
+- Flask
+
+### Database
+- MySQL
+
+### Version Control
+- Git
+- GitHub
+
+---
+
+## 📂 Project Structure
 
 ```text
 ATM_Manager/
 │
-├── atm_manager.py
-├── README.md
-└── .gitignore
+├── database/
+│   ├── models/
+│   ├── services/
+│   ├── db.py
+│   └── table.py
+│
+├── static/
+│   ├── css/
+│   └── images/
+│
+├── templates/
+│   ├── login.html
+│   ├── dashboard.html
+│   ├── balance.html
+│   ├── deposit.html
+│   ├── withdraw.html
+│   ├── transfer.html
+│   ├── history.html
+│   ├── profile.html
+│   └── change_pin.html
+│
+├── app.py
+├── requirements.txt
+├── .env
+└── README.md
 ```
 
 ---
 
-## ⚙️ How It Works
+## ⚙️ Installation
 
-### 1. Generate PIN
-- User generates a random 6-digit PIN.
-- The PIN is required for all account-related operations.
+### 1️⃣ Clone Repository
 
-### 2. Deposit Money
-- User enters the correct PIN.
-- Amount is added to the account balance.
+```bash
+git clone https://github.com/Akash29281/ATM_Manager.git
+```
 
-### 3. Withdraw Money
-- User enters the correct PIN.
-- System checks:
-  - Account balance availability
-  - Sufficient funds
-  - Valid withdrawal amount
+### 2️⃣ Navigate to Project Folder
 
-### 4. View Balance
-- User enters the correct PIN.
-- Current account balance is displayed.
+```bash
+cd ATM_Manager
+```
 
-### 5. Security
-- Maximum of 3 incorrect PIN attempts allowed.
-- Unauthorized access message is displayed after 3 failed attempts.
+### 3️⃣ Install Dependencies
 
----
+```bash
+pip install -r requirements.txt
+```
 
-## 📸 Sample Output
+### 4️⃣ Create Environment File
+
+Create a `.env` file in the project root:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=atm_manager
+```
+
+### 5️⃣ Run Application
+
+```bash
+python app.py
+```
+
+Open:
 
 ```text
---------Welcome To 24x7 ATM------------
-Generate PIN press 1
-Deposit Amount press 2
-Withdraw Amount press 3
-View Balance press 4
-Exit press 0
----------------------------------------
-
-Enter Your Choice: 1
-Your PIN: 452318
-
-Enter Your Choice: 2
-Enter PIN: 452318
-Enter Your Amount: 5000
-Deposit Successful!
-
-Enter Your Choice: 4
-Enter PIN: 452318
-Available Balance: 5000
+http://127.0.0.1:5000
 ```
 
 ---
 
-## 🧠 Concepts Demonstrated
+## 🔒 Security Features
 
-- Functions
-- Conditional Statements
-- Loops
-- Global Variables
-- User Input Handling
-- Authentication Logic
-- Random Number Generation
-- Error Handling
-- Basic Security Implementation
+- Session-based Authentication
+- Protected Routes
+- Environment Variables for Database Credentials
+- PIN Validation
+- User Verification Before Transactions
 
 ---
 
-## 🔮 Future Improvements
+## 🎯 Future Enhancements
 
-- Store account data in a database (SQLite/MySQL)
-- Multiple user accounts
-- PIN reset functionality
-- Transaction history
-- Mini statement generation
-- Account creation and management
-- File handling for persistent storage
-- GUI using Tkinter or CustomTkinter
-- Web version using Flask or Django
-
----
-
-## 📚 Learning Outcomes
-
-This project helped in understanding:
-
-- Python fundamentals
-- Real-world problem solving
-- ATM transaction workflow
-- Authentication mechanisms
-- Program structure and modular design
-
----
-
-## 🤝 Contributing
-
-Contributions, suggestions, and improvements are welcome.
-
-1. Fork the repository
-2. Create a new branch
-3. Make your changes
-4. Commit and push
-5. Create a Pull Request
-
----
-
-## 📄 License
-
-This project is open-source and available under the MIT License.
+- Password/PIN Hashing using bcrypt
+- Admin Dashboard
+- Account Lock System
+- Email Notifications
+- PDF Bank Statement Download
+- Two-Factor Authentication (2FA)
+- Face Recognition Login
+- AI Financial Assistant
 
 ---
 
@@ -149,7 +219,14 @@ This project is open-source and available under the MIT License.
 
 **Akash Kumar**
 
-- GitHub: https://github.com/Akash29281
+GitHub:
+https://github.com/Akash29281
 
-If you found this project useful, consider giving it a ⭐ on GitHub.
-````
+LinkedIn:
+Add your LinkedIn profile URL here
+
+---
+
+## ⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub.
