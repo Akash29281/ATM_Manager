@@ -215,7 +215,7 @@ def change_pin():
         confirm_pin = request.form.get("confirm_pin", "").strip()
 
         if new_pin != confirm_pin:
-            flash("New PIN and confirmation PIN do not match.", "error")
+            flash("New PIN and Confirm PIN do not match.", "error")
         else:
             success, message = update_pin(user[3], old_pin, new_pin)
             flash(message, "success" if success else "error")
